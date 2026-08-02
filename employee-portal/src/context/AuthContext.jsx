@@ -10,14 +10,14 @@ export const AuthProvider = ({ children }) => {
   // Synchronize auth state on application startup
   useEffect(() => {
     const checkLoggedIn = async () => {
-      const token = localStorage.getItem('employeeToken');
+      const token = sessionStorage.getItem('employeeToken');
       if (token) {
         try {
           const response = await api.get('/api/auth/me');
           setUser(response.data);
         } catch (error) {
           console.error("Token validation failed, logging out", error);
-          localStorage.removeItem('employeeToken');
+          sessionStorage.removeItem('employeeToken');
           setUser(null);
         }
       }
@@ -33,13 +33,13 @@ export const AuthProvider = ({ children }) => {
       throw new Error(`Access Denied. This account is registered as ${response.data.role}.`);
     }
     const { accessToken, ...userData } = response.data;
-    localStorage.setItem('employeeToken', accessToken);
+    sessionStorage.setItem('employeeToken', accessToken);
     setUser(userData);
     return response.data;
   };
 
   const logout = () => {
-    localStorage.removeItem('employeeToken');
+    sessionStorage.removeItem('employeeToken');
     setUser(null);
   };
 
